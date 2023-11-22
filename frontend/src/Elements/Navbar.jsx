@@ -13,7 +13,7 @@ const Navbar = () => {
         </Typography>
         <Button color="inherit"><Link to={'/home'} style={{color:'white',textDecoration:'none'}}>Home</Link></Button>
         <Button color="inherit"><Link to={'/form'} style={{color:'white',textDecoration:'none'}}>Form</Link></Button>
-        <Button color="inherit"><Link to={'/'} style={{color:'white',textDecoration:'none'}}>Logout</Link></Button>
+        <Button color="inherit"><Link to={'/logout'} style={{color:'white',textDecoration:'none'}}>Logout</Link></Button>
       </Toolbar>
     </AppBar>
   </Box>

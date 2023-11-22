@@ -1,5 +1,5 @@
 import React from 'react'
-import Navbar from '../Elements/Navbar'
+import Navbar from '../elements/Navbar'
 
 const Main = (props) => {
   return (

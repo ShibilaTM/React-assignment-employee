@@ -152,18 +152,21 @@ const EmpForm = () => {
     location: ''
   });
   const [userRole, setUserRole] = useState('');
+  const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
 
   useEffect(() => {
-    axiosInstance.get('http://localhost:4000')  // Adjust the API endpoint to fetch user role
-        .then((res) => {
-            setUserRole(res.data.role);
-        })
-        .catch((error) => {
-            console.log(error);
-        });
-}, []);
+    // Retrieve user role from session storage
+    const storedUserRole = sessionStorage.getItem('userRole');
 
+    if (storedUserRole) {
+      setUserRole(storedUserRole);
+      setLoading(false);
+    } else {
+      setLoading(false);
+      console.error("User role not found in session storage");
+    }
+  }, []);
 
   const inputHandler = (e) => {
     setForm({
@@ -172,12 +175,29 @@ const EmpForm = () => {
     });
   };
 
+  const addHandler = (e) => {
+    axiosInstance.post('http://127.0.0.1:4000/form/add', form)
+      .then((res) => {
+        alert(res.data.message);
+      })
+      .then(() => {
+        navigate('/home');
+      })
+      .catch((error) => {
+        console.error("Error adding form:", error);
+      });
+  }
 
-  const addHandler=(e)=>{
-    axiosInstance.post('http://127.0.0.1:4000/form/add',form).then((res)=>{
-      alert(res.data.message);
-    })
-    navigate('/home')
+  // Render loading state or null if user role is not admin
+  if (loading) {
+    return <div>Loading...</div>;
+  }
+
+  if (userRole !== 'admin') {
+    console.log('userRole:', userRole);
+    // Redirect to home if the user is not an admin
+    navigate('/home');
+    return null; // Return null to avoid rendering the form
   }
   
 

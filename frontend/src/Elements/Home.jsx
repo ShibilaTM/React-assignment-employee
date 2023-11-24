@@ -88,34 +88,69 @@
 
 
 import React, { useState, useEffect } from 'react';
-
-import { useNavigate } from 'react-router-dom'; // Import useHistory hook from react-router-dom
+import { useNavigate } from 'react-router-dom';
 import axiosInstance from '../axiosinterceptor';
 import { Card, CardActions, CardContent, CardMedia, Grid, Typography, Button } from '@mui/material';
 
 const Home = () => {
   const [cardData, setCardData] = useState([]);
- 
-  const navigate = useNavigate()
-  useEffect(() => {
-    axiosInstance.get('http://127.0.0.1:4000/form').then((res) => {
-      console.log('Fetched data:', res.data);
-      setCardData(res.data);
-    });
-  }, []);
-  
+  const [updateFormData, setUpdateFormData] = useState({
+    name: '',
+    designation: '',
+    location: '',
+  }); // Add state for update form data
+  const navigate = useNavigate();
 
-  const handleUpdate = (id) => {
+ 
+    useEffect(() => {
+      const fetchData = async () => {
+        try {
+          console.log('Fetching data...');
+          const token = sessionStorage.getItem('userToken');
+          const response = await axiosInstance.get('http://127.0.0.1:4000/form', {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          });
+          console.log('API Response:', response);
+          setCardData(response.data);
+        } catch (error) {
+          console.error('Error fetching data:', error);
+        }
+      };
     
-   navigate(`/form/edit/${id}`);
+      fetchData();
+    }, []);
     
+
+  const handleUpdate = async (id) => {
+    try {
+      const token = sessionStorage.getItem('userToken');
+      const response = await axiosInstance.put(`http://127.0.0.1:4000/form/edit/${id}`, updateFormData, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      console.log('Update Response:', response);
+      navigate('/form');
+    } catch (error) {
+      console.error('Error updating data:', error);
+    }
   };
 
-  const handleDelete = (id) => {
-    // Implement delete functionality here if needed
-    // For example, you can send a DELETE request to the server
-    // and then update the state to remove the deleted form
-    console.log(`Delete form with ID: ${id}`);
+  const handleDelete = async (id) => {
+    try {
+      const token = sessionStorage.getItem('userToken');
+      const response = await axiosInstance.delete(`http://127.0.0.1:4000/form/remove/${id}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      console.log('Delete Response:', response);
+      // Update your state or fetch data again to reflect the changes
+    } catch (error) {
+      console.error('Error deleting data:', error);
+    }
   };
 
   return (
@@ -158,3 +193,4 @@ const Home = () => {
 };
 
 export default Home;
+

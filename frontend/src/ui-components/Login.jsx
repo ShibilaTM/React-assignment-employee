@@ -97,6 +97,7 @@ const addHandler = async (e) => {
       if (result.data.message === 'success') {
           sessionStorage.setItem('userToken', result.data.token);
           sessionStorage.setItem('userRole', result.data.payload.role); // Save user role
+          console.log(result.data.payload.role)
           navigate('/home');
       } else {
           alert('Login failed');

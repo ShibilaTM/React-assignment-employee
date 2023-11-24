@@ -135,12 +135,12 @@
 // };
 
 // export default EmpForm;
+
 import React, { useState, useEffect } from 'react';
 import { Avatar, Box, Button, Container, CssBaseline, TextField, ThemeProvider, Typography, createTheme } from '@mui/material';
 import GroupAddOutlinedIcon from '@mui/icons-material/GroupAddOutlined';
 import { useNavigate } from 'react-router-dom';
 import axiosInstance from '../axiosinterceptor';
-
 
 const defaultTheme = createTheme();
 
@@ -155,15 +155,15 @@ const EmpForm = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    // Fetch user role after login
-    axiosInstance.get('/get-user-role')  // Adjust the API endpoint based on your server implementation
-      .then((res) => {
-        setUserRole(res.data.role);
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-  }, []);
+    axiosInstance.get('http://localhost:4000')  // Adjust the API endpoint to fetch user role
+        .then((res) => {
+            setUserRole(res.data.role);
+        })
+        .catch((error) => {
+            console.log(error);
+        });
+}, []);
+
 
   const inputHandler = (e) => {
     setForm({
@@ -172,22 +172,14 @@ const EmpForm = () => {
     });
   };
 
-  const addHandler = (e) => {
-    e.preventDefault();
 
-    if (userRole === 'admin') {
-      axiosInstance.post('http://127.0.0.1:4000/form/add', form)  // Adjust the API endpoint based on your server implementation
-        .then((res) => {
-          alert(res.data);
-          navigate('/home');
-        })
-        .catch((error) => {
-          console.log(error);
-        });
-    } else {
-      alert('Unauthorized: Only admin can submit forms.');
-    }
-  };
+  const addHandler=(e)=>{
+    axiosInstance.post('http://127.0.0.1:4000/form/add',form).then((res)=>{
+      alert(res.data.message);
+    })
+    navigate('/home')
+  }
+  
 
   return (
     <ThemeProvider theme={defaultTheme}>

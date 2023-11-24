@@ -65,30 +65,29 @@ const cors = require('cors')
 const jwt = require('jsonwebtoken')  // Import jwt module
 
 router.use(cors())
-
 function verifytoken(req, res, next) {
     try {
-        const token = req.headers.token
-        if (!token) throw 'unauthorized'
-        let payload = jwt.verify(token, 'reactemployeeapp')
-        if (!payload || !payload.isAdmin) throw 'unauthorized' // Check if isAdmin is true for admin access
-        next()
+        const token = req.headers.token;
+        if (!token) throw 'Token not provided';
+        let payload = jwt.verify(token, 'reactemployeeapp');
+        if (!payload) throw 'Token verification failed';
+        next();
     } catch (error) {
-        res.status(401).send('Unauthorized')
+        res.status(401).json({ error: 'Unauthorized', message: error });
     }
 }
 
+  
 // POST method accessible only by admin
-router.post('/add', verifytoken, async (req, res) => {
+router.post('/add',verifytoken,async(req,res)=>{
     try {
-        const data = req.body
+        const data=req.body
         const form = await formData(data).save()
-        res.status(200).json('Successfully posted')
+        res.status(200).json({message:'successfully posted'})
     } catch (error) {
         res.status(404).json(error)
     }
 })
-
 
 // GET method accessible to both admin and other users
 router.get('/', verifytoken, async (req, res) => {
@@ -125,3 +124,44 @@ router.delete('/remove/:id', verifytoken, async (req, res) => {
 })
 
 module.exports = router
+
+
+
+// const mongoose= require('mongoose')
+// const formData = require('../model/formData')
+// const router = require('express').Router()
+// const cors= require('cors')
+// router.use(cors())
+// function verifytoken(req,res,next){
+//     try{
+//         const token = req.headers.token
+//         if(!token) throw 'unauthorized'
+//         let payload = jwt.verify(token,'reactemployeeapp')
+//         if(!payload) throw 'unauthorized'
+//         next()
+//     }catch(error){
+//         res.status(401).send('error')
+//     }
+// }
+
+
+// router.post('/add',verifytoken,async(req,res)=>{
+//     try {
+//         const data=req.body
+//         const form = await formData(data).save()
+//         res.status(200).json('successfully posted')
+//     } catch (error) {
+//         res.status(404).json(error)
+//     }
+// })
+
+// router.get('/',verifytoken,async(req,res)=>{
+//     try{
+//         const data = await formData.find()
+//         res.status(200).json(data)
+//     }catch(error){
+//         console.log(error)
+//     }
+// })
+
+// module.exports=router

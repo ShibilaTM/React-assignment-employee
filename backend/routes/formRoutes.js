@@ -113,17 +113,17 @@ router.put('/edit/:id', verifytoken, async (req, res) => {
 })
 
 // DELETE method accessible only by admin
-router.delete('/remove/:id', verifytoken, async (req, res) => {
+router.delete('/remove/:id',verifytoken, async (req, res) => {
+    const id = req.params.id;
     try {
-        const id = req.params.id
-        await formData.findByIdAndRemove(id)
-        res.status(200).json('Successfully deleted')
+      const data = await formData.findByIdAndDelete(id); 
+      res.status(200).json("Successfully deleted");
     } catch (error) {
-        res.status(404).json(error)
+      res.status(500).json(error);
     }
-})
+  });
 
-module.exports = router
+module.exports = router;
 
 
 

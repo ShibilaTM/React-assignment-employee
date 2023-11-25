@@ -91,67 +91,61 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axiosInstance from '../axiosinterceptor';
 import { Card, CardActions, CardContent, CardMedia, Grid, Typography, Button } from '@mui/material';
+import axios from 'axios';
 
 const Home = () => {
   const [cardData, setCardData] = useState([]);
-  const [updateFormData, setUpdateFormData] = useState({
-    name: '',
-    designation: '',
-    location: '',
-  }); // Add state for update form data
   const navigate = useNavigate();
+//get data
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        console.log('Fetching data...');
+        const token = sessionStorage.getItem('userToken');
+        const response = await axiosInstance.get('http://127.0.0.1:4000/form', {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+        console.log('API Response:', response);
+        setCardData(response.data);
+      } catch (error) {
+        console.error('Error fetching data:', error);
+      }
+    };
 
- 
-    useEffect(() => {
-      const fetchData = async () => {
-        try {
-          console.log('Fetching data...');
-          const token = sessionStorage.getItem('userToken');
-          const response = await axiosInstance.get('http://127.0.0.1:4000/form', {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          });
-          console.log('API Response:', response);
-          setCardData(response.data);
-        } catch (error) {
-          console.error('Error fetching data:', error);
-        }
-      };
-    
-      fetchData();
-    }, []);
-    
+    fetchData();
+  }, []);
 
-  const handleUpdate = async (id) => {
-    try {
-      const token = sessionStorage.getItem('userToken');
-      const response = await axiosInstance.put(`http://127.0.0.1:4000/form/edit/${id}`, updateFormData, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
-      console.log('Update Response:', response);
-      navigate('/form');
-    } catch (error) {
-      console.error('Error updating data:', error);
-    }
+  //delete
+  const removeEmployee = (id) => {
+    const token = sessionStorage.getItem('userToken'); // Replace with the actual token
+  
+    // Fetch the user role each time before making the delete request
+    const storedUserRole = sessionStorage.getItem('userRole');
+    console.log(storedUserRole);
+  
+    axiosInstance.delete(`http://127.0.0.1:4000/form/remove/${id}`, {
+      headers: {
+        'token': token
+      }
+    }).then((res) => {
+      if (storedUserRole === 'admin') {
+        alert(res.data);
+        // Refresh or update your UI after a successful deletion
+      } else if (storedUserRole === 'employee') {
+        alert('You do not have permission to delete.');
+      } else {
+        console.log('not a user');
+      }
+    }).catch((error) => {
+      console.error(error.response.data);
+    });
   };
+  
+  
+  
 
-  const handleDelete = async (id) => {
-    try {
-      const token = sessionStorage.getItem('userToken');
-      const response = await axiosInstance.delete(`http://127.0.0.1:4000/form/remove/${id}`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
-      console.log('Delete Response:', response);
-      // Update your state or fetch data again to reflect the changes
-    } catch (error) {
-      console.error('Error deleting data:', error);
-    }
-  };
 
   return (
     <div>
@@ -177,10 +171,10 @@ const Home = () => {
                 </Typography>
               </CardContent>
               <CardActions>
-                <Button size="small" color="secondary" onClick={() => handleUpdate(val._id)}>
+                <Button size="small" color="secondary">
                   Update
                 </Button>
-                <Button size="small" color="secondary" onClick={() => handleDelete(val._id)}>
+                <Button size="small" color="secondary" onClick={() => removeEmployee(val._id)}>
                   Delete
                 </Button>
               </CardActions>
@@ -193,4 +187,5 @@ const Home = () => {
 };
 
 export default Home;
+
 

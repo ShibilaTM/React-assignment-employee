@@ -1,64 +1,4 @@
-// const mongoose= require('mongoose')
-// const formData = require('../model/formData')
-// const router = require('express').Router()
-// const cors= require('cors')
-// const jwt = require('jsonwebtoken')
-// router.use(cors())
-
-// function verifytoken(req,res,next){
-//     try{
-//         const token = req.headers.token
-//         if(!token) throw 'unauthorized'
-//         let payload = jwt.verify(token,'reactemployeeapp')
-//         if(!payload) throw 'unauthorized'
-//         next()
-//     }catch(error){
-//         res.status(401).send('error')
-//     }
-// }
-
-
-// function verifytoken(req,res,next){
-//     try{
-//         const token = req.headers.token
-//         if(!token) throw 'unauthorized'
-//         let payload = jwt.verify(token,'reactemployeeapp')
-//         if(!payload) throw 'unauthorized'
-//         next()
-//     }catch(error){
-//         res.status(401).send('error')
-//     }
-// }
-// router.post('/add',verifytoken,async(req,res)=>{
-//     try {
-//         const data=req.body
-//         const form = await formData(data).save()
-//         res.status(200).json('successfully posted')
-//     } catch (error) {
-//         res.status(404).json(error)
-//     }
-// })
-
-// router.get('/',verifytoken,async(req,res)=>{
-//     try{
-//         const data = await formData.find()
-//         res.status(200).json(data)
-//     }catch(error){
-//         console.log(error)
-//     }
-// })
-
-// router.put('/edit/:id',async(req,res)=>{
-//     try {
-//         var item=req.body;
-//        const data= await formData.findByIdAndUpdate(req.params.id,item);
-//         res.status(200).send('Updated successfully');
-//     } catch (error) {
-//         res.status(404).send('Update not working');
-//     }
-// }) 
-
-const mongoose = require('mongoose')
+ const mongoose = require('mongoose')
 const formData = require('../model/formData')
 const router = require('express').Router()
 const cors = require('cors')
@@ -99,6 +39,19 @@ router.get('/', verifytoken, async (req, res) => {
     }
 });
 
+router.get('/:id', verifytoken, async (req, res) => {
+    try {
+      const id = req.params.id;
+      const employee = await formData.findById(id);
+      if (!employee) {
+        return res.status(404).json({ message: 'Employee not found' });
+      }
+      res.status(200).json(employee);
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({ message: 'Internal server error' });
+    }
+  });
 
 // PUT method accessible only by admin
 router.put('/edit/:id', verifytoken, async (req, res) => {
@@ -124,44 +77,3 @@ router.delete('/remove/:id',verifytoken, async (req, res) => {
   });
 
 module.exports = router;
-
-
-
-// const mongoose= require('mongoose')
-// const formData = require('../model/formData')
-// const router = require('express').Router()
-// const cors= require('cors')
-// router.use(cors())
-// function verifytoken(req,res,next){
-//     try{
-//         const token = req.headers.token
-//         if(!token) throw 'unauthorized'
-//         let payload = jwt.verify(token,'reactemployeeapp')
-//         if(!payload) throw 'unauthorized'
-//         next()
-//     }catch(error){
-//         res.status(401).send('error')
-//     }
-// }
-
-
-// router.post('/add',verifytoken,async(req,res)=>{
-//     try {
-//         const data=req.body
-//         const form = await formData(data).save()
-//         res.status(200).json('successfully posted')
-//     } catch (error) {
-//         res.status(404).json(error)
-//     }
-// })
-
-// router.get('/',verifytoken,async(req,res)=>{
-//     try{
-//         const data = await formData.find()
-//         res.status(200).json(data)
-//     }catch(error){
-//         console.log(error)
-//     }
-// })
-
-// module.exports=router

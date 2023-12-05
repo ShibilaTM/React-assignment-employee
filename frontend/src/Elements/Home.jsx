@@ -114,7 +114,7 @@ useEffect(() => {
   const fetchData = async () => {
     try {
       const token = sessionStorage.getItem('userToken');
-      const response = await axiosInstance.get('http://127.0.0.1:4000/form', {
+      const response = await axiosInstance.get('/form', {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -137,7 +137,7 @@ useEffect(() => {
     const storedUserRole = sessionStorage.getItem('userRole');
     console.log(storedUserRole);
   
-    axiosInstance.delete(`http://127.0.0.1:4000/form/remove/${id}`, {
+    axiosInstance.delete(`/form/remove/${id}`, {
       headers: {
         'token': token
       }

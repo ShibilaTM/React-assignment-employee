@@ -228,7 +228,7 @@ const EmpForm = () => {
     
 
   const addHandler = () => {
-    axiosInstance.post('http://127.0.0.1:4000/form/add', form)
+    axiosInstance.post('/form/add', form)
       .then((res) => {
         alert(res.data.message);
         navigate('/home');

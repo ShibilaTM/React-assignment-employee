@@ -8,6 +8,21 @@ const PORT = process.env.PORT;
 
 const path = require('path');
 
+// MongoDB connection setup
+mongoose.connect(process.env.MONGODB_URL, {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+  });
+  
+  const db = mongoose.connection;
+  db.on('error', (error) => console.error('MongoDB connection error:', error));
+  db.once('open', () => {
+    console.log('Connected to MongoDB');
+  })
+
+
+
+
 app.use(express.json());
 app.use(express.urlencoded({extended:true}));
 
